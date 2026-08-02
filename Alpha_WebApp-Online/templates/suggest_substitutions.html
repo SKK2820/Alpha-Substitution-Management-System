@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<style>
+body {
+
+    min-height: 100vh;
+
+    margin: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    font-family: 'Segoe UI', sans-serif;
+
+    background: linear-gradient(
+        -45deg,
+        #fff3b0,
+        #bde0fe,
+        #ffc8c8,
+        #caffbf
+    );
+
+    background-size: 400% 400%;
+
+    animation: backgroundAnimation 40s ease infinite;
+}
+
+
+@keyframes backgroundAnimation {
+
+    0% {
+        background-position: 0% 50%;
+    }
+
+    25% {
+        background-position: 50% 100%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    75% {
+        background-position: 50% 0%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.school-header {
+
+    text-align: center;
+
+    padding: 18px 10px;
+
+    margin-bottom: 25px;
+
+    background-color: #ffffff;
+
+    border-bottom: 1px solid #dddddd;
+
+}
+
+
+.school-header h2 {
+
+    margin: 0;
+
+    font-weight: bold;
+
+}
+
+
+.school-header h4 {
+
+    margin-top: 6px;
+
+    margin-bottom: 0;
+
+    font-weight: 600;
+
+}
+
+.main-content {
+
+    flex: 1;
+
+    padding-top: 40px;
+
+    padding-bottom: 40px;
+}
+
+
+.content-card {
+
+    background: rgba(
+        255,
+        255,
+        255,
+        0.94
+    );
+
+    border-radius: 18px;
+
+    padding: 30px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(0, 0, 0, 0.20);
+}
+
+.manual-teacher-container {
+
+    position: relative;
+
+}
+
+
+.teacher-suggestions {
+
+    display: none;
+
+    position: absolute;
+
+    top: 100%;
+
+    left: 0;
+
+    right: 0;
+
+    background: white;
+
+    border: 1px solid #ced4da;
+
+    border-radius: 0 0 8px 8px;
+
+    max-height: 220px;
+
+    overflow-y: auto;
+
+    z-index: 2000;
+
+    box-shadow:
+        0 6px 15px
+        rgba(0, 0, 0, 0.15);
+
+}
+
+
+.teacher-suggestion-item {
+
+    padding: 10px 14px;
+
+    cursor: pointer;
+
+    border-bottom: 1px solid #eeeeee;
+
+}
+
+
+.teacher-suggestion-item:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.teacher-suggestion-item:hover {
+
+    background-color: #f1f3f5;
+
+}
+
+</style>
+
+    <title>Substitution Suggestions</title>
+
+    <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet">
+
+</head>
+
+<body class="container mt-5">
+<div class="main-content">
+    <div class="container">
+        <div class="content-card">
+
+            <header class="school-header">
+
+    <h2>
+        ALPHA SCHOOL, CIT NAGAR
+    </h2>
+
+    <h4>
+        SUBSTITUTION MANAGEMENT SYSTEM
+    </h4>
+
+</header>
+
+    <div><a
+href="/"
+class="btn btn-primary">
+
+🏠 Home
+
+</a>
+<button
+class="btn btn-secondary"
+onclick="history.back()">
+
+← Back
+
+</button></div>
+
+    <hr>
+
+<h1 class="mb-4">
+
+    <b>Substitution Suggestions:</b>
+
+</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+
+{% if messages %}
+
+{% for category, message in messages %}
+
+<div class="alert alert-{{ category }} alert-dismissible fade show">
+
+{{ message }}
+
+<button
+type="button"
+class="btn-close"
+data-bs-dismiss="alert">
+
+</button>
+
+</div>
+
+{% endfor %}
+
+{% endif %}
+
+{% endwith %}
+
+<hr>
+
+<form
+method="POST"
+action="/preview_substitutions">
+
+{% for item in suggestions %}
+
+<div class="card mb-3">
+
+    <div class="card-body">
+
+        <h5>
+
+            Period {{ item.period }}
+
+        </h5>
+
+        <p>
+
+            Class:
+
+            <b>{{ item.class_name }}</b>
+
+        </p>
+
+        <input
+        type="hidden"
+        name="absence_id_{{ loop.index }}"
+        value="{{ item.absence_id }}">
+
+        <input
+        type="hidden"
+        name="period_{{ loop.index }}"
+        value="{{ item.period }}">
+
+        <input
+        type="hidden"
+        name="class_{{ loop.index }}"
+        value="{{ item.class_name }}">
+
+        <input
+        type="hidden"
+        name="absent_teacher_{{ loop.index }}"
+        value="{{ item.absent_teacher }}">
+
+        <label class="form-label">
+
+            <b>
+
+                Select Substitute Teacher For
+                {{ item.absent_teacher }}:
+
+            </b>
+
+        </label>
+
+    <select
+    class="form-select substitute-select"
+    name="teacher_{{ loop.index }}"
+    data-period="{{ item.period }}"onchange="toggleManualBox(this,{{ loop.index }});
+    checkDuplicateSubstitutes();">
+
+            {% for teacher in item.teachers %}
+
+            <option value="{{ teacher[0] }}">
+
+                {{ teacher[1] }}
+
+                {% if loop.first %}
+
+                    (Recommended)
+
+                {% elif teacher[3] %}
+
+                    (Has 4 Continuous Periods)
+
+                {% elif teacher[4] %}
+
+                    (Has 4 Substitutions Assigned Today)
+
+                {% endif %}
+
+            </option>
+
+            {% endfor %}
+
+            <option value="NONE">
+
+                Substitute Not Available
+
+            </option>
+
+            <option value="MANUAL">
+
+                Other (Type Name Manually)
+
+            </option>
+
+        </select>
+
+<div
+
+    id="manual_div_{{ loop.index }}"
+
+    style="display:none;"
+
+    class="mt-3 manual-teacher-container"
+
+>
+
+    <label class="form-label">
+
+        <b>Enter Teacher Name:</b>
+
+    </label>
+
+
+    <input
+
+        type="text"
+
+        class="form-control manual-teacher-input"
+
+        name="manual_teacher_{{ loop.index }}"
+
+        placeholder="Type teacher name..."
+
+        autocomplete="off"
+
+    >
+
+
+    <div class="teacher-suggestions">
+
+        {% for teacher in item.free_teachers %}
+
+            <div
+
+                class="teacher-suggestion-item"
+
+                data-name="{{ teacher[1] }}"
+
+            >
+
+                {{ teacher[1] }}
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+<div
+    id="duplicateSubstituteWarning"
+    class="alert alert-danger mt-3"
+    style="display:none;"
+>
+</div>
+<script>
+    // Initial check for duplicate substitutes
+    checkDuplicateSubstitutes();</script>
+
+    
+<input
+type="hidden"
+name="count"
+value="{{ suggestions|length }}">
+
+<button
+type="submit"
+id="previewButton"
+class="btn btn-success">
+
+    Preview Timetable
+
+</button>
+
+</form>
+
+<script>
+
+document.querySelectorAll(
+    ".manual-teacher-input"
+).forEach(input => {
+
+    input.addEventListener(
+        "input",
+        checkDuplicateSubstitutes
+    );
+
+});
+
+</script>
+
+<script>
+
+function toggleManualBox(
+    dropdown,
+    index
+){
+
+    let box = document.getElementById(
+        "manual_div_" + index
+    );
+
+    if(
+        dropdown.value == "MANUAL"
+    ){
+
+        box.style.display = "block";
+
+    }
+
+    else{
+
+        box.style.display = "none";
+
+    }
+
+}
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+window.setTimeout(function() {
+
+document.querySelectorAll(".flash-message").forEach(function(alert) {
+
+var bsAlert = new bootstrap.Alert(alert);
+
+bsAlert.close();
+
+});
+
+}, 5000);
+
+</script>
+
+
+<script>
+
+document.querySelectorAll(
+    ".manual-teacher-input"
+).forEach(input => {
+
+
+    const container =
+        input.closest(
+            ".manual-teacher-container"
+        );
+
+
+    const suggestionBox =
+        container.querySelector(
+            ".teacher-suggestions"
+        );
+
+
+    const suggestions =
+        suggestionBox.querySelectorAll(
+            ".teacher-suggestion-item"
+        );
+
+
+    // Show all free teachers
+    // when input is clicked
+
+    input.addEventListener(
+        "focus",
+        function () {
+
+            let visibleTeachers = 0;
+
+
+            suggestions.forEach(item => {
+
+                item.style.display = "block";
+
+                visibleTeachers++;
+
+            });
+
+
+            if (visibleTeachers > 0) {
+
+                suggestionBox.style.display =
+                    "block";
+
+            }
+
+        }
+    );
+
+
+    // Filter free teachers
+    // while typing
+
+    input.addEventListener(
+        "input",
+        function () {
+
+            const searchText =
+                input.value
+                .toLowerCase()
+                .trim();
+
+
+            let matches = 0;
+
+
+            suggestions.forEach(item => {
+
+                const teacherName =
+                    item.dataset.name
+                    .toLowerCase();
+
+
+                if (
+                    teacherName.includes(
+                        searchText
+                    )
+                ) {
+
+                    item.style.display =
+                        "block";
+
+                    matches++;
+
+                }
+
+                else {
+
+                    item.style.display =
+                        "none";
+
+                }
+
+            });
+
+
+            if (matches > 0) {
+
+                suggestionBox.style.display =
+                    "block";
+
+            }
+
+            else {
+
+                suggestionBox.style.display =
+                    "none";
+
+            }
+
+        }
+    );
+
+
+    // Click teacher name
+    // to select
+
+    suggestions.forEach(item => {
+
+        item.addEventListener(
+            "click",
+            function () {
+
+                input.value =
+                    item.dataset.name;
+
+                suggestionBox.style.display =
+                    "none";
+
+                checkDuplicateSubstitutes();
+
+            }
+        );
+
+    });
+
+
+    // Close suggestions
+    // when clicking outside
+
+    document.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                !container.contains(
+                    event.target
+                )
+            ) {
+
+                suggestionBox.style.display =
+                    "none";
+
+            }
+
+        }
+    );
+
+
+});
+
+</script>
+
+<script>
+
+function checkDuplicateSubstitutes() {
+
+    const selects =
+        document.querySelectorAll(
+            ".substitute-select"
+        );
+
+    const assignedTeachers =
+        new Map();
+
+    const conflicts = [];
+
+
+    selects.forEach(select => {
+
+        const period =
+            select.dataset.period;
+
+        const selectedValue =
+            select.value;
+
+        let duplicateKey = null;
+
+        let teacherName = null;
+
+
+        // NORMAL DATABASE TEACHER
+        if (
+            selectedValue !== "NONE" &&
+            selectedValue !== "MANUAL"
+        ) {
+
+            // Use teacher ID for comparison
+            duplicateKey =
+                "ID:"
+                +
+                selectedValue
+                +
+                "|PERIOD:"
+                +
+                period;
+
+
+            teacherName =
+                select.options[
+                    select.selectedIndex
+                ]
+                .text
+                .replace(/\([^)]*\)/g, "")
+                .trim();
+
+        }
+
+
+        // MANUAL TEACHER
+        else if (
+            selectedValue === "MANUAL"
+        ) {
+
+            const rowIndex =
+                select.name.replace(
+                    "teacher_",
+                    ""
+                );
+
+
+            const manualInput =
+                document.querySelector(
+                    `[name="manual_teacher_${rowIndex}"]`
+                );
+
+
+            if (
+                manualInput &&
+                manualInput.value.trim()
+            ) {
+
+                teacherName =
+                    manualInput.value.trim();
+
+
+                duplicateKey =
+                    "NAME:"
+                    +
+                    teacherName
+                    .toLocaleLowerCase()
+                    .trim()
+                    +
+                    "|PERIOD:"
+                    +
+                    period;
+
+            }
+
+        }
+
+
+        // Ignore NONE
+        // and empty manual entry
+
+        if (!duplicateKey) {
+
+            return;
+
+        }
+
+
+        if (
+            assignedTeachers.has(
+                duplicateKey
+            )
+        ) {
+
+            conflicts.push(
+
+                teacherName
+                +
+                " is already assigned "
+                +
+                "to another class during Period "
+                +
+                period
+                +
+                "."
+
+            );
+
+        }
+
+        else {
+
+            assignedTeachers.set(
+                duplicateKey,
+                true
+            );
+
+        }
+
+    });
+
+
+    const warningBox =
+        document.getElementById(
+            "duplicateSubstituteWarning"
+        );
+
+
+    const previewButton =
+        document.getElementById(
+            "previewButton"
+        );
+
+
+    if (conflicts.length > 0) {
+
+        warningBox.innerHTML =
+
+            "<b>⚠ Substitution Conflict:</b><br>"
+            +
+            conflicts.join("<br>");
+
+
+        warningBox.style.display =
+            "block";
+
+
+        previewButton.disabled =
+            true;
+
+    }
+
+    else {
+
+        warningBox.style.display =
+            "none";
+
+
+        warningBox.innerHTML =
+            "";
+
+
+        previewButton.disabled =
+            false;
+
+    }
+
+}
+
+</script>
+
+</div>
+</div>
+</div>
+<footer class="bg-dark text-white text-center mt-5 py-3">
+
+    © 2026 All Rights Reserved by S Karthikeyan
+
+</footer>
+
+</body>
+
+</html>

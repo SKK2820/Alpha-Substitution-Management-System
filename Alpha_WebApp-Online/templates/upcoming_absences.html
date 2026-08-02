@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Upcoming Absences
+    </title>
+
+
+    <!-- Bootstrap -->
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+
+    <style>
+
+        /* =====================================
+           ANIMATED BACKGROUND
+        ===================================== */
+
+        body {
+
+            min-height: 100vh;
+
+            margin: 0;
+
+            display: flex;
+
+            flex-direction: column;
+
+            font-family:
+            'Segoe UI',
+            sans-serif;
+
+            background:
+            linear-gradient(
+                -45deg,
+                #fff3b0,
+                #bde0fe,
+                #ffc8c8,
+                #caffbf
+            );
+
+            background-size:
+            400% 400%;
+
+            animation:
+            backgroundAnimation
+            40s ease infinite;
+
+        }
+
+
+        @keyframes backgroundAnimation {
+
+            0% {
+
+                background-position:
+                0% 50%;
+
+            }
+
+            25% {
+
+                background-position:
+                50% 100%;
+
+            }
+
+            50% {
+
+                background-position:
+                100% 50%;
+
+            }
+
+            75% {
+
+                background-position:
+                50% 0%;
+
+            }
+
+            100% {
+
+                background-position:
+                0% 50%;
+
+            }
+
+        }
+
+        .school-header {
+
+    text-align: center;
+
+    padding: 18px 10px;
+
+    margin-bottom: 25px;
+
+    background-color: #ffffff;
+
+    border-bottom: 1px solid #dddddd;
+
+}
+
+
+.school-header h2 {
+
+    margin: 0;
+
+    font-weight: bold;
+
+}
+
+
+.school-header h4 {
+
+    margin-top: 6px;
+
+    margin-bottom: 0;
+
+    font-weight: 600;
+
+}
+
+
+        /* =====================================
+           MAIN CONTENT
+        ===================================== */
+
+        .main-content {
+
+            flex: 1;
+
+            padding-top: 40px;
+
+            padding-bottom: 40px;
+
+        }
+
+
+        /* =====================================
+           MAIN CARD
+        ===================================== */
+
+        .content-card {
+
+            background:
+            rgba(
+                255,
+                255,
+                255,
+                0.94
+            );
+
+            border-radius: 18px;
+
+            padding: 30px;
+
+            box-shadow:
+
+            0 10px 30px
+
+            rgba(
+                0,
+                0,
+                0,
+                0.20
+            );
+
+        }
+
+
+        /* =====================================
+           HEADING
+        ===================================== */
+
+        .page-title {
+
+            font-weight: 700;
+
+            color: #212529;
+
+        }
+
+
+        /* =====================================
+           DARK HR
+        ===================================== */
+
+        hr {
+
+            border: none;
+
+            height: 2px;
+
+            background-color:
+            #343a40;
+
+            opacity: 0.8;
+
+        }
+
+
+        /* =====================================
+           TABLE
+        ===================================== */
+
+        .table {
+
+            vertical-align: middle;
+
+        }
+
+
+        .table thead {
+
+            background-color:
+            #212529;
+
+            color: white;
+
+        }
+
+
+        .table tbody tr {
+
+            transition:
+            0.2s;
+
+        }
+
+
+        .table tbody tr:hover {
+
+            background-color:
+            rgba(
+                13,
+                110,
+                253,
+                0.08
+            );
+
+        }
+
+
+        /* =====================================
+           SEARCH BOX
+        ===================================== */
+
+        .search-section {
+
+            background:
+
+            rgba(
+                248,
+                249,
+                250,
+                0.85
+            );
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        /* =====================================
+           BUTTON EFFECT
+        ===================================== */
+
+        .btn {
+
+            transition:
+            0.25s;
+
+        }
+
+
+        .btn:hover {
+
+            transform:
+            translateY(-2px);
+
+        }
+
+
+        /* =====================================
+           FOOTER
+        ===================================== */
+
+        footer {
+
+            width: 100%;
+
+            padding:
+
+            18px 10px;
+
+            text-align: center;
+
+            color:
+            #212529;
+
+            background:
+
+            rgba(
+                255,
+                255,
+                255,
+                0.30
+            );
+
+            backdrop-filter:
+            blur(5px);
+
+            border-top:
+
+            1px solid
+
+            rgba(
+                0,
+                0,
+                0,
+                0.15
+            );
+
+            font-size:
+            14px;
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="main-content">
+
+
+        <div class="container">
+
+
+            <div class="content-card">
+                <header class="school-header">
+
+    <h2>
+        ALPHA SCHOOL, CIT NAGAR
+    </h2>
+
+    <h4>
+        SUBSTITUTION MANAGEMENT SYSTEM
+    </h4>
+
+</header>
+
+
+                <!-- =====================================
+                     PAGE HEADER
+                ====================================== -->
+
+
+                <div
+                    class="
+                    d-flex
+                    justify-content-between
+                    align-items-center
+                    "
+                >
+
+
+                    <h2 class="page-title">
+
+                        Upcoming Absences
+
+                    </h2>
+
+
+                    <div>
+
+
+                        <a
+                            href="{{ url_for('home') }}"
+                            class="btn btn-primary"
+                        >
+
+                            🏠 Home
+
+                        </a>
+
+                        <button
+class="btn btn-secondary"
+onclick="history.back()">
+
+← Back
+
+</button>
+
+
+                        <a
+                            href="{{ url_for('absences_page') }}"
+                            class="btn btn-success"
+                        >
+
+                            📂 Today's Absences
+
+                        </a>
+
+
+                        <a
+                            href="{{ url_for('previous_absences') }}"
+                            class="btn btn-secondary"
+                        >
+
+                            📂 Previous Absences
+
+                        </a>
+
+
+                    </div>
+
+
+                </div>
+
+
+                <hr>
+
+
+                <!-- =====================================
+                     SEARCH SECTION
+                ====================================== -->
+
+
+                <div class="search-section">
+
+
+                    <form
+                        method="GET"
+                        action="{{ url_for('upcoming_absences') }}"
+                    >
+
+
+                        <div class="row g-3">
+
+
+                            <div class="col-md-5">
+
+
+                                <label
+                                    class="form-label"
+                                >
+
+                                    Teacher Name
+
+                                </label>
+
+
+                                <input
+
+                                    type="text"
+
+                                    name="name"
+
+                                    class="form-control"
+
+                                    placeholder=
+                                    "Search teacher name"
+
+                                    value=
+                                    "{{ search_name }}"
+
+                                >
+
+
+                            </div>
+
+
+                            <div class="col-md-4">
+
+
+                                <label
+                                    class="form-label"
+                                >
+
+                                    Date
+
+                                </label>
+
+
+                                <input
+
+                                    type="date"
+
+                                    name="date"
+
+                                    class="form-control"
+
+                                    value=
+                                    "{{ search_date }}"
+
+                                >
+
+
+                            </div>
+
+
+                            <div
+                                class="
+                                col-md-3
+                                d-flex
+                                align-items-end
+                                "
+                            >
+
+
+                                <button
+
+                                    type="submit"
+
+                                    class="
+                                    btn
+                                    btn-primary
+                                    w-100
+                                    "
+
+                                >
+
+                                    Search
+
+                                </button>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </form>
+
+
+                    {% if search_name or search_date %}
+
+
+                        <div class="mt-3">
+
+
+                            <a
+
+                                href=
+                                "{{ url_for('upcoming_absences') }}"
+
+                                class=
+                                "btn btn-outline-danger"
+
+                            >
+
+                                Clear Search
+
+                            </a>
+
+
+                        </div>
+
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <!-- =====================================
+                     UPCOMING ABSENCES TABLE
+                ====================================== -->
+
+
+                {% if absences %}
+
+
+                    <div class="table-responsive">
+
+
+                        <table
+
+                            class="
+                            table
+                            table-bordered
+                            table-hover
+                            "
+
+                        >
+
+
+                            <thead>
+
+
+                                <tr>
+
+
+                                    <th>
+
+                                        ID
+
+                                    </th>
+
+
+                                    <th>
+
+                                        Teacher Name
+
+                                    </th>
+
+
+                                    <th>
+
+                                        Date
+
+                                    </th>
+
+
+                                    <th>
+
+                                        Day
+
+                                    </th>
+
+                                    <th>
+                                        Action
+
+                                    </th>
+
+
+                                </tr>
+
+
+                            </thead>
+
+
+                            <tbody>
+
+
+                                {% for absence in absences %}
+
+
+                                    <tr>
+
+
+                                        <td>
+
+                                            {{loop.index}}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {{ absence[1] }}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {{ absence[2] }}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {{ absence[3] }}
+
+                                        </td>
+
+                                        <td>
+
+                                            <a
+                                                href=
+                                                "/delete_absence/{{ absence[0] }}"
+
+                                                class=
+                                                "btn btn-danger"
+                                                onclick=
+                                                "return confirm('Are you sure you want to delete this upcoming absence?')"
+
+                                            >
+
+                                                Delete
+
+                                            </a>
+
+
+                                    </tr>
+
+
+                                {% endfor %}
+
+
+                            </tbody>
+
+
+                        </table>
+
+
+                    </div>
+
+
+                {% else %}
+
+
+                    <div
+
+                        class="
+                        alert
+                        alert-info
+                        text-center
+                        "
+
+                    >
+                        No upcoming absences found.
+
+
+                    </div>
+
+
+                {% endif %}
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =====================================
+         FOOTER
+    ====================================== -->
+
+
+    <footer>
+
+
+        © 2026 Alpha Substitution Management System
+
+        <br>
+
+        All Rights Reserved by S Karthikeyan
+
+
+    </footer>
+
+
+</body>
+
+</html>
