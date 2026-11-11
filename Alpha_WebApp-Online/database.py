@@ -7,8 +7,8 @@ MAX_SUBSTITUTIONS_PER_DAY = 4
 def connect_db():
     return mysql.connector.connect(
         host="localhost",
-        user="alpha_admin",
-        password="alpha@123",
+        user="[Secret]",
+        password="[Secret]",
         database="alpha_substitution",
         autocommit=False,
         connection_timeout=30
@@ -18,8 +18,8 @@ def create_database():
 
     conn = mysql.connector.connect(
         host="localhost",
-        user="alpha_admin",
-        password="alpha@123"
+        user="[Secret]",
+        password="[Secret]"
     )
 
     c = conn.cursor()
@@ -34,7 +34,7 @@ def create_database():
     conn.close()
 
 def initialize_database(): 
-    conn = mysql.connector.connect( host="localhost", user="alpha_admin", password="alpha@123", database="alpha_substitution" ) 
+    conn = mysql.connector.connect( host="localhost", user="[Secret]", password="[Secret]", database="alpha_substitution" ) 
     c = conn.cursor() 
     # Teachers table 
     c.execute( """ CREATE TABLE IF NOT EXISTS teachers ( id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100) NOT NULL, subject VARCHAR(100), contact VARCHAR(20) ) """ ) 
@@ -75,7 +75,7 @@ def initialize_database():
 
     FROM users
 
-    WHERE username='admin'
+    WHERE username='[Secret]'
     """
 )
 
@@ -103,8 +103,8 @@ def initialize_database():
         """,
 
         (
-            "admin",
-            "admin@123",
+            "[Secret]",
+            "[Secret]",
             "admin"
         )
     )
@@ -114,7 +114,7 @@ def initialize_database():
     c.execute( """ SELECT * FROM settings WHERE id=1 """ ) 
     setting = c.fetchone() 
     if setting is None: 
-        c.execute( """ INSERT INTO settings( id, staff_password ) VALUES( 1, %s ) """, ( "staff@123", ) )
+        c.execute( """ INSERT INTO settings( id, staff_password ) VALUES( 1, %s ) """, ( "[Secret]", ) )
     conn.commit() 
     conn.close()
 
